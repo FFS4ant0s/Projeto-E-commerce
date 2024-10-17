@@ -1,0 +1,18 @@
+# Ignorar arquivos de ambiente do Python
+*.pyc
+__pycache__/
+
+# Ignorar o diretório do ambiente virtual
+venv/
+.env
+
+# Ignorar arquivos de configuração do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos do Django
+*.log
+db.sqlite3
+
+# Ignorar diretórios de testes
+/tests/
