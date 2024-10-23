@@ -109,12 +109,40 @@ class AdicionarAoCarrinho(View):
 
 class RemoverDoCarrinho(View):
     def get(self, *args, **kwargs):
-        return HttpResponse('Remover carrinho')
+        http_referer = self.request.META.get('HTTP_REFERER', reverse('produto:lista'))
+        variacao_id = self.request.GET.get('vid')
+
+        # Verifica se o ID da variação foi fornecido
+        if not variacao_id:
+            messages.error(self.request, 'ID da variação não fornecido.')
+            return redirect(http_referer)
+
+        # Verifica se o carrinho existe na sessão
+        carrinho = self.request.session.get('carrinho', {})
+
+        # Verifica se a variação está no carrinho
+        if variacao_id not in carrinho:
+            messages.warning(self.request, 'Produto não encontrado no carrinho.')
+            return redirect(http_referer)
+
+        # Mensagem de sucesso ao remover o produto
+        produto_nome = carrinho[variacao_id]['produto_nome']
+        messages.success(self.request, f'{produto_nome} removido do seu carrinho.')
+
+        # Remove o produto do carrinho
+        del carrinho[variacao_id]
+        self.request.session['carrinho'] = carrinho
+        self.request.session.save()
+
+        return redirect(http_referer)
 
 
 class Carrinho(View):
     def get(self, *args, **kwargs):
-        return render(self.request, 'produto/carrinho.html')
+        contexto = {
+            'carrinho': self.request.session.get('carrinho', {})
+        }
+        return render(self.request, 'produto/carrinho.html', contexto)
 
 
 class Finalizar(View):
