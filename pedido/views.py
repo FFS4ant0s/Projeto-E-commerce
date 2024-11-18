@@ -9,7 +9,7 @@ from utils import utils
 from produto.models import Variacao
 
 
-class DispatchLoginRequired(View):
+class DispatchLoginRequiredMixin(View):
     def dispatch(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
             return redirect('perfil:criar')
@@ -17,7 +17,7 @@ class DispatchLoginRequired(View):
         return super().dispatch(*args, **kwargs)
 
 
-class Pagar(DispatchLoginRequired, DetailView):
+class Pagar(DispatchLoginRequiredMixin, DetailView):
     template_name = 'pedido/pagar.html'
     model = Pedido
     pk_url_kwarg = 'pk'
@@ -120,11 +120,16 @@ class SalvarPedido(View):
         )
 
 
-class Detalhe(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Detalhe')
+class Detalhe(DispatchLoginRequiredMixin, DetailView):
+    model = Pedido
+    context_object_name = 'pedido'
+    template_name = 'pedido/detalhe.html'
+    pk_url_kwarg = 'pk'
 
 
-class Lista(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Lista')
+class Lista(DispatchLoginRequiredMixin, ListView):
+    model = Pedido
+    context_object_name = 'pedidos'
+    template_name = 'pedido/lista.html'
+    paginate_by = 10
+    ordering = ['-id']
