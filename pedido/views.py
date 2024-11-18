@@ -1,6 +1,6 @@
 from .models import Pedido, ItemPedido
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
 from django.contrib import messages
@@ -10,6 +10,13 @@ from produto.models import Variacao
 
 
 class Pagar(View):
+    template_name = 'pedido/pagar.html'
+    model = Pedido
+    pk_url_kwarg = 'pk'
+    context_object_name = 'pedido'
+
+
+class SalvarPedido(View):
     template_name = 'pedido/pagar.html'
 
     def get(self, *args, **kwargs):
@@ -89,12 +96,14 @@ class Pagar(View):
         del self.request.session['carrinho']
 
         # return render(self.request, self.template_name)
-        return redirect('pedido:lista')
-
-
-class SalvarPedido(View):
-    def get(self, *args, **kwargs):
-        return HttpResponse('Fechar pedido')
+        return redirect(
+            reverse(
+                'pedido:pagar',
+                kwargs={
+                    'pk': pedido.pk
+                }
+            )
+        )
 
 
 class Detalhe(View):
