@@ -38,6 +38,8 @@ class ItemPedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     produto = models.CharField(max_length=255)
     produto_id = models.PositiveIntegerField()
+    variacao = models.CharField(max_length=255, null=True, blank=True)
+    variacao_id = models.IntegerField(null=True, blank=True)
     preco = models.FloatField()
     preco_promocional = models.FloatField(default=0)
     quantidade = models.PositiveIntegerField()

@@ -1,19 +1,32 @@
 from .models import Pedido, ItemPedido
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.contrib import messages
 from utils import utils
 
 from produto.models import Variacao
 
 
-class Pagar(View):
+class DispatchLoginRequired(View):
+    def dispatch(self, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('perfil:criar')
+
+        return super().dispatch(*args, **kwargs)
+
+
+class Pagar(DispatchLoginRequired, DetailView):
     template_name = 'pedido/pagar.html'
     model = Pedido
     pk_url_kwarg = 'pk'
     context_object_name = 'pedido'
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        qs = qs.filter(usuario=self.request.user)
+        return qs
 
 
 class SalvarPedido(View):
@@ -87,7 +100,8 @@ class SalvarPedido(View):
                     variacao=v['variacao_nome'],
                     variacao_id=v['variacao_id'],
                     preco=v['preco_quantitativo'],
-                    preco_promocional=v['quantidade'],
+                    preco_promocional=v['preco_quantitativo_promocional'],
+                    quantidade=v['quantidade'],
                     imagem=v['imagem'],
                 ) for v in carrinho.values()
             ]
