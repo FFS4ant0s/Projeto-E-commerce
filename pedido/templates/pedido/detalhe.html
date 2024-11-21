@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block titulo %}Pagamento | {% endblock %}
+{% block titulo %}{{ pedido }} | {% endblock %}
 
 {% load omfilters %}
 {% load static %}
@@ -8,7 +8,5 @@
 {% block conteudo %}
 
 {% include 'parciais/_pedido.html' %}
-
-
 
 {% endblock %}

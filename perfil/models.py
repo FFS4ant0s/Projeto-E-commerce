@@ -69,6 +69,7 @@ class Perfil(models.Model):
 
     def clean(self):
         error_messages = {}
+
         if not valida_cpf(self.cpf):
             error_messages['cpf'] = 'Digite um CPF valido'
 
