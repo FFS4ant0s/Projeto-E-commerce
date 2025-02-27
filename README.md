@@ -45,5 +45,5 @@ Este é um projeto de e-commerce desenvolvido utilizando **Django** para o back-
 Clone o repositório:
 
 ```bash
-git clone https://github.com/seuusuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/FFS4ant0s/Projeto-E-commerce.git
+cd Projeto-E-commerce
